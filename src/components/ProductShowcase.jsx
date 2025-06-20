@@ -1,6 +1,7 @@
-import React from 'react';
-import { ShoppingCart} from 'lucide-react';
+import React, { useEffect, useRef } from 'react';
+import { ShoppingCart } from 'lucide-react';
 import { assets } from '../assets/assets';
+import gsap from 'gsap';
 
 const ProductShowcase = () => {
   const products = [
@@ -21,11 +22,43 @@ const ProductShowcase = () => {
     }
   ];
 
+  const headerRef = useRef(null);
+  const productRefs = useRef([]);
+
+  useEffect(() => {
+    // Header animation
+    gsap.fromTo(
+      headerRef.current.children,
+      { opacity: 0, y: 30 },
+      { 
+        opacity: 1, 
+        y: 0, 
+        duration: 0.8, 
+        stagger: 0.2, 
+        ease: 'power3.out' 
+      }
+    );
+
+    // Product cards animation
+    gsap.fromTo(
+      productRefs.current,
+      { opacity: 0, scale: 0.95 },
+      { 
+        opacity: 1, 
+        scale: 1, 
+        duration: 0.8, 
+        stagger: 0.2, 
+        ease: 'power3.out',
+        delay: 0.4 
+      }
+    );
+  }, []);
+
   return (
-    <div className="min-h-screen bg-[#EFF5E1] py-20">
+    <div className="min-h-screen bg-[#FEFFF4] py-10 lg:py-20">
       {/* Header */}
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col lg:flex-row items-center justify-between px-8 mb-12">
+        <div ref={headerRef} className="flex flex-col lg:flex-row items-center justify-between px-8 mb-12">
           <div className="flex items-center space-x-4 mb-6 lg:mb-0">
             <button className="px-6 py-2 bg-white rounded-full border border-[#2D3B36] text-sm font-medium hover:bg-gray-50 transition-colors">
               • Best Selling Products
@@ -52,8 +85,12 @@ const ProductShowcase = () => {
 
         {/* Product Grid */}
         <div className="px-4 lg:grid lg:grid-cols-3 lg:gap-8 flex lg:flex-none overflow-x-auto lg:overflow-x-visible space-x-6 lg:space-x-0 pb-4 lg:pb-0">
-          {products.map((product) => (
-            <div key={product.id} className="group cursor-pointer flex-shrink-0 w-80 lg:w-auto">
+          {products.map((product, index) => (
+            <div 
+              key={product.id} 
+              className="group cursor-pointer flex-shrink-0 w-80 lg:w-auto"
+              ref={el => productRefs.current[index] = el}
+            >
               <div className="relative rounded-2xl overflow-hidden transition-transform duration-300 group-hover:scale-105">
                 {/* Product Image Container */}
                 <div className="relative h-[30rem] bg-white rounded-2xl overflow-hidden">

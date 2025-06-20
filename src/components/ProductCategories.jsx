@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { ShoppingCart } from 'lucide-react';
 import { assets } from "../assets/assets";
+import gsap from "gsap";
 
 const ProductCategories = () => {
   const products = [
@@ -21,18 +22,65 @@ const ProductCategories = () => {
     }
   ];
 
+  const headerRef = useRef(null);
+  const buttonContainerRef = useRef(null);
+  const productRefs = useRef([]);
+
+  useEffect(() => {
+    // Header animation
+    gsap.fromTo(
+      headerRef.current.children,
+      { opacity: 0, y: 30 },
+      { 
+        opacity: 1, 
+        y: 0, 
+        duration: 0.8, 
+        stagger: 0.2, 
+        ease: "power3.out" 
+      }
+    );
+
+    // Category buttons animation
+    gsap.fromTo(
+      buttonContainerRef.current.children,
+      { opacity: 0, y: 20 },
+      { 
+        opacity: 1, 
+        y: 0, 
+        duration: 0.6, 
+        stagger: 0.1, 
+        ease: "power3.out",
+        delay: 0.4 
+      }
+    );
+
+    // Product cards animation
+    gsap.fromTo(
+      productRefs.current,
+      { opacity: 0, scale: 0.95 },
+      { 
+        opacity: 1, 
+        scale: 1, 
+        duration: 0.8, 
+        stagger: 0.2, 
+        ease: "power3.out",
+        delay: 0.6 
+      }
+    );
+  }, []);
+
   return (
-    <section className="py-16  bg-[#F5F3E7] min-h-screen">
+    <section className="lg:py-16 bg-[#FEFFF4] min-h-screen">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="text-center px-6 mb-12">
+        <div ref={headerRef} className="text-center px-6 mb-12">
           <h1 className="text-4xl md:text-5xl font-medium text-left lg:text-center text-gray-800 leading-tight mb-8">
             Feel Beautiful Inside and Out<br />
             with Every Product.
           </h1>
           
           {/* Category Buttons */}
-          <div className="flex flex-wrap justify-center gap-3 mb-12">
+          <div ref={buttonContainerRef} className="flex flex-wrap justify-center gap-3 mb-12">
             <button className="bg-[#2D3B36] text-white px-6 py-2 rounded-full text-sm font-medium hover:bg-[#1a2420] transition-colors">
               NEW ARRIVAL
             </button>
@@ -50,8 +98,12 @@ const ProductCategories = () => {
 
         {/* Products Grid */}
         <div className="px-6 lg:grid lg:grid-cols-3 lg:gap-8 flex lg:flex-none overflow-x-auto lg:overflow-x-visible space-x-6 lg:space-x-0 pb-4 lg:pb-0">
-          {products.map((product) => (
-            <div key={product.id} className="group cursor-pointer flex-shrink-0 w-80 lg:w-auto">
+          {products.map((product, index) => (
+            <div 
+              key={product.id} 
+              className="group cursor-pointer flex-shrink-0 w-80 lg:w-auto"
+              ref={el => productRefs.current[index] = el}
+            >
               <div className="relative rounded-2xl overflow-hidden transition-transform duration-300 group-hover:scale-105">
                 {/* Product Image Container */}
                 <div className="relative h-[30rem] bg-white rounded-2xl overflow-hidden">
